@@ -8,40 +8,16 @@
 body {
     margin: 0;
     overflow: hidden;
-    background: black;
+    background: radial-gradient(circle at center, #0b0f1a, #000);
     font-family: Arial;
     color: white;
 }
 
-/* Canvas */
+/* CANVAS */
 canvas {
     position: fixed;
     top: 0;
     left: 0;
-}
-
-/* INTRO */
-.intro {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 10;
-    cursor: pointer;
-}
-
-.intro img {
-    width: 250px;
-    border-radius: 20px;
-    box-shadow: 0 0 30px white;
-}
-
-.intro h1 {
-    margin-top: 20px;
 }
 
 /* CONTENIDO */
@@ -54,32 +30,38 @@ canvas {
     z-index: 2;
 }
 
-/* TARJETA */
+h1 {
+    font-size: 2.5em;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
+
+/* FOTO CENTRAL */
 .card {
-    width: 320px;
+    width: 300px;
     margin: auto;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 0 40px rgba(255,255,255,0.4);
-    transition: transform 0.2s;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(255,255,255,0.2);
+    transition: transform 0.3s ease;
 }
 
 .card img {
     width: 100%;
 }
 
-/* CORAZONES */
-.heart {
+/* IMÁGENES FLOTANTES BONITAS */
+.float-img {
     position: absolute;
-    font-size: 20px;
-    animation: float 3s linear forwards;
-}
-
-@keyframes float {
-    to {
-        transform: translateY(-200px);
-        opacity: 0;
-    }
+    width: 100px;
+    border-radius: 15px;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(1px);
+    box-shadow: 0 0 25px rgba(255,255,255,0.4);
+    transition: all 2.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 </style>
 
@@ -87,42 +69,21 @@ canvas {
 
 <body>
 
-<!-- INTRO -->
-<div class="intro" id="intro">
-    <img src="foto1.jpg">
-    <h1>Haz clic para entrar a nuestro universo 💖</h1>
-</div>
-
-<!-- MUSICA -->
-<audio id="music" loop>
-    <source src="musica.mp3" type="audio/mpeg">
-</audio>
-
-<!-- ESTRELLAS -->
 <canvas id="stars"></canvas>
 
 <div class="container">
     <h1>🌌 Nuestro Universo 💖</h1>
 
     <div class="card" id="card">
-        <img src="foto2.jpg">
+        <img src="foto1.jpg">
     </div>
 
-    <p>Contigo todo es infinito ✨</p>
+    <p>Todo contigo es magia ✨</p>
 </div>
 
 <script>
 
-/* ===== INTRO ===== */
-const intro = document.getElementById("intro");
-const music = document.getElementById("music");
-
-intro.addEventListener("click", () => {
-    intro.style.display = "none";
-    music.play();
-});
-
-/* ===== ESTRELLAS ===== */
+/* ===== ESTRELLAS SUAVES (NO CUADROS) ===== */
 const canvas = document.getElementById("stars");
 const ctx = canvas.getContext("2d");
 
@@ -131,104 +92,82 @@ canvas.height = window.innerHeight;
 
 let stars = [];
 
-for (let i = 0; i < 200; i++) {
+for (let i = 0; i < 120; i++) {
     stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        z: Math.random() * 2
+        r: Math.random() * 2,
+        speed: Math.random() * 0.2
     });
 }
 
 function drawStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    stars.forEach(star => {
-        ctx.fillStyle = "white";
-        ctx.fillRect(star.x, star.y, star.z, star.z);
+    stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fill();
     });
 }
 
-function moveStars(e) {
-    stars.forEach(star => {
-        star.x += (e.clientX - canvas.width/2) * 0.0003 * star.z;
-        star.y += (e.clientY - canvas.height/2) * 0.0003 * star.z;
+function animateStars() {
+    stars.forEach(s => {
+        s.y += s.speed;
+        if (s.y > canvas.height) s.y = 0;
     });
-}
 
-document.addEventListener("mousemove", moveStars);
-
-function animate() {
     drawStars();
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animateStars);
 }
 
-animate();
+animateStars();
 
-/* ===== EFECTO 3D TARJETA ===== */
+/* ===== EFECTO 3D SUAVE ===== */
 const card = document.getElementById("card");
 
 document.addEventListener("mousemove", (e) => {
-    let x = (window.innerWidth/2 - e.pageX) / 20;
-    let y = (window.innerHeight/2 - e.pageY) / 20;
+    let x = (window.innerWidth / 2 - e.pageX) / 40;
+    let y = (window.innerHeight / 2 - e.pageY) / 40;
 
     card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* ===== CORAZONES ===== */
-document.addEventListener("click", (e) => {
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.style.left = e.clientX + "px";
-    heart.style.top = e.clientY + "px";
-    heart.innerHTML = "💖";
-
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 3000);
-});
-
-/* ===== IMÁGENES FLOTANTES CON SOMBRA ===== */
+/* ===== IMÁGENES FLOTANTES ESTÉTICAS ===== */
 
 const imagenes = [
     "foto1.jpg",
     "foto2.jpg",
     "foto3.jpg",
-    "foto4.jpg",
-    "foto5.jpg"
+    "foto4.jpg"
 ];
 
 document.addEventListener("mousemove", (e) => {
 
-    if (Math.random() > 0.15) return;
+    if (Math.random() > 0.1) return;
 
     let img = document.createElement("img");
-
     img.src = imagenes[Math.floor(Math.random() * imagenes.length)];
+    img.className = "float-img";
 
-    img.style.position = "absolute";
-    img.style.left = e.clientX + "px";
-    img.style.top = e.clientY + "px";
-    img.style.width = "90px";
-    img.style.borderRadius = "12px";
-    img.style.pointerEvents = "none";
-    img.style.zIndex = 3;
-
-    /* SOMBRA PRO */
-    img.style.boxShadow = "0 0 20px rgba(255,255,255,0.7)";
-
-    img.style.opacity = 1;
-    img.style.transition = "all 2s ease-out";
+    img.style.left = (e.clientX - 50) + "px";
+    img.style.top = (e.clientY - 50) + "px";
 
     document.body.appendChild(img);
 
     setTimeout(() => {
-        img.style.transform = "translateY(-180px) scale(1.3)";
-        img.style.opacity = 0;
+        img.style.opacity = 1;
+        img.style.transform = "translateY(-200px) scale(1)";
     }, 50);
 
     setTimeout(() => {
+        img.style.opacity = 0;
+    }, 1800);
+
+    setTimeout(() => {
         img.remove();
-    }, 2000);
+    }, 2500);
 });
 
 </script>
