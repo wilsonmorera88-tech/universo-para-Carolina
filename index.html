@@ -2,48 +2,39 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Nuestro Universo 💖</title>
+<title>Universo 💖</title>
 
 <style>
 body {
     margin: 0;
     overflow: hidden;
-    background: radial-gradient(circle at center, #0b0f1a, #000);
-    font-family: Arial;
+    background: black;
     color: white;
+    font-family: Arial;
 }
 
-/* CANVAS */
-canvas {
+/* canvas */
+#stars {
     position: fixed;
     top: 0;
     left: 0;
 }
 
-/* CONTENIDO */
+/* contenido */
 .container {
     position: absolute;
     width: 100%;
     top: 50%;
     transform: translateY(-50%);
     text-align: center;
-    z-index: 2;
 }
 
-h1 {
-    font-size: 2.5em;
-    letter-spacing: 2px;
-    text-shadow: 0 0 20px rgba(255,255,255,0.5);
-}
-
-/* FOTO CENTRAL */
 .card {
-    width: 300px;
+    width: 280px;
     margin: auto;
-    border-radius: 20px;
+    border-radius: 15px;
     overflow: hidden;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 40px rgba(255,255,255,0.2);
+    box-shadow: 0 0 30px rgba(255,255,255,0.3);
     transition: transform 0.3s ease;
 }
 
@@ -51,17 +42,15 @@ h1 {
     width: 100%;
 }
 
-/* IMÁGENES FLOTANTES BONITAS */
+/* imagen flotante */
 .float-img {
     position: absolute;
-    width: 100px;
-    border-radius: 15px;
+    width: 90px;
+    border-radius: 12px;
     pointer-events: none;
     opacity: 0;
-    transform: scale(0.8);
-    filter: blur(1px);
-    box-shadow: 0 0 25px rgba(255,255,255,0.4);
-    transition: all 2.5s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 20px rgba(255,255,255,0.6);
+    transition: all 2s ease;
 }
 </style>
 
@@ -83,91 +72,75 @@ h1 {
 
 <script>
 
-/* ===== ESTRELLAS SUAVES (NO CUADROS) ===== */
+/* CANVAS SEGURO */
 const canvas = document.getElementById("stars");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
+/* estrellas */
 let stars = [];
 
-for (let i = 0; i < 120; i++) {
+for (let i = 0; i < 100; i++) {
     stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: Math.random() * 2,
-        speed: Math.random() * 0.2
+        r: Math.random() * 2
     });
 }
 
-function drawStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+function draw() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    ctx.fillStyle = "white";
     stars.forEach(s => {
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255,255,255,0.8)";
         ctx.fill();
     });
+
+    requestAnimationFrame(draw);
 }
+draw();
 
-function animateStars() {
-    stars.forEach(s => {
-        s.y += s.speed;
-        if (s.y > canvas.height) s.y = 0;
-    });
-
-    drawStars();
-    requestAnimationFrame(animateStars);
-}
-
-animateStars();
-
-/* ===== EFECTO 3D SUAVE ===== */
+/* 3D */
 const card = document.getElementById("card");
 
 document.addEventListener("mousemove", (e) => {
-    let x = (window.innerWidth / 2 - e.pageX) / 40;
-    let y = (window.innerHeight / 2 - e.pageY) / 40;
+    let x = (window.innerWidth/2 - e.pageX) / 40;
+    let y = (window.innerHeight/2 - e.pageY) / 40;
 
     card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* ===== IMÁGENES FLOTANTES ESTÉTICAS ===== */
-
-const imagenes = [
-    "foto1.jpg",
-    "foto2.jpg",
-    "foto3.jpg",
-    "foto4.jpg"
-];
+/* imágenes flotantes */
+const imgs = ["foto1.jpg","foto2.jpg","foto3.jpg"];
 
 document.addEventListener("mousemove", (e) => {
 
     if (Math.random() > 0.1) return;
 
     let img = document.createElement("img");
-    img.src = imagenes[Math.floor(Math.random() * imagenes.length)];
+    img.src = imgs[Math.floor(Math.random() * imgs.length)];
     img.className = "float-img";
 
-    img.style.left = (e.clientX - 50) + "px";
-    img.style.top = (e.clientY - 50) + "px";
+    img.style.left = e.clientX + "px";
+    img.style.top = e.clientY + "px";
 
     document.body.appendChild(img);
 
     setTimeout(() => {
         img.style.opacity = 1;
-        img.style.transform = "translateY(-200px) scale(1)";
+        img.style.transform = "translateY(-150px)";
     }, 50);
 
-    setTimeout(() => {
-        img.style.opacity = 0;
-    }, 1800);
-
-    setTimeout(() => {
-        img.remove();
-    }, 2500);
+    setTimeout(() => img.remove(), 2000);
 });
 
 </script>
