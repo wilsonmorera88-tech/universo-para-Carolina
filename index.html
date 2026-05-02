@@ -13,14 +13,14 @@ body {
     color: white;
 }
 
-/* Fondo estrellas */
+/* Canvas */
 canvas {
     position: fixed;
     top: 0;
     left: 0;
 }
 
-/* Pantalla inicial */
+/* INTRO */
 .intro {
     position: absolute;
     width: 100%;
@@ -44,7 +44,7 @@ canvas {
     margin-top: 20px;
 }
 
-/* Contenido */
+/* CONTENIDO */
 .container {
     position: absolute;
     width: 100%;
@@ -54,7 +54,7 @@ canvas {
     z-index: 2;
 }
 
-/* Tarjeta 3D */
+/* TARJETA */
 .card {
     width: 320px;
     margin: auto;
@@ -68,10 +68,10 @@ canvas {
     width: 100%;
 }
 
-/* Corazones */
+/* CORAZONES */
 .heart {
     position: absolute;
-    color: pink;
+    font-size: 20px;
     animation: float 3s linear forwards;
 }
 
@@ -82,6 +82,7 @@ canvas {
     }
 }
 </style>
+
 </head>
 
 <body>
@@ -111,6 +112,7 @@ canvas {
 </div>
 
 <script>
+
 /* ===== INTRO ===== */
 const intro = document.getElementById("intro");
 const music = document.getElementById("music");
@@ -162,19 +164,7 @@ function animate() {
 
 animate();
 
-/* ===== ESTRELLAS FUGACES ===== */
-setInterval(() => {
-    let x = Math.random() * canvas.width;
-    let y = Math.random() * canvas.height;
-
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + 50, y + 50);
-    ctx.strokeStyle = "white";
-    ctx.stroke();
-}, 1500);
-
-/* ===== EFECTO 3D ===== */
+/* ===== EFECTO 3D TARJETA ===== */
 const card = document.getElementById("card");
 
 document.addEventListener("mousemove", (e) => {
@@ -184,7 +174,7 @@ document.addEventListener("mousemove", (e) => {
     card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* ===== CORAZONES CLICK ===== */
+/* ===== CORAZONES ===== */
 document.addEventListener("click", (e) => {
     let heart = document.createElement("div");
     heart.className = "heart";
@@ -196,6 +186,51 @@ document.addEventListener("click", (e) => {
 
     setTimeout(() => heart.remove(), 3000);
 });
+
+/* ===== IMÁGENES FLOTANTES CON SOMBRA ===== */
+
+const imagenes = [
+    "foto1.jpg",
+    "foto2.jpg",
+    "foto3.jpg",
+    "foto4.jpg",
+    "foto5.jpg"
+];
+
+document.addEventListener("mousemove", (e) => {
+
+    if (Math.random() > 0.15) return;
+
+    let img = document.createElement("img");
+
+    img.src = imagenes[Math.floor(Math.random() * imagenes.length)];
+
+    img.style.position = "absolute";
+    img.style.left = e.clientX + "px";
+    img.style.top = e.clientY + "px";
+    img.style.width = "90px";
+    img.style.borderRadius = "12px";
+    img.style.pointerEvents = "none";
+    img.style.zIndex = 3;
+
+    /* SOMBRA PRO */
+    img.style.boxShadow = "0 0 20px rgba(255,255,255,0.7)";
+
+    img.style.opacity = 1;
+    img.style.transition = "all 2s ease-out";
+
+    document.body.appendChild(img);
+
+    setTimeout(() => {
+        img.style.transform = "translateY(-180px) scale(1.3)";
+        img.style.opacity = 0;
+    }, 50);
+
+    setTimeout(() => {
+        img.remove();
+    }, 2000);
+});
+
 </script>
 
 </body>
