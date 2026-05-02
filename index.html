@@ -8,25 +8,59 @@
 body {
     margin: 0;
     overflow: hidden;
-    background: black;
+    background: radial-gradient(circle at center, #1a0f1f, #000);
     font-family: Arial;
+    color: white;
 }
 
 /* CANVAS */
 canvas {
-    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
-/* IMÁGENES FLOTANTES */
-.float {
+/* TEXTO */
+.center {
     position: absolute;
-    width: 100px;
-    border-radius: 50%;
-    pointer-events: none;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+h1 {
+    font-size: 2.5em;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-shadow: 0 0 25px rgba(255,150,200,0.6);
+}
+
+/* FOTO CENTRAL */
+.card {
+    width: 260px;
+    margin: 20px auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(255,150,200,0.4);
+    transition: transform 0.4s ease;
+}
+
+.card img {
+    width: 100%;
+}
+
+/* FOTOS FLOTANTES */
+.memory {
+    position: absolute;
+    width: 110px;
+    border-radius: 15px;
     opacity: 0;
-    transform: scale(0.8);
-    transition: all 2.5s ease;
-    box-shadow: 0 0 25px rgba(255,100,200,0.8);
+    pointer-events: none;
+    filter: blur(0.5px);
+    box-shadow: 0 0 30px rgba(255,150,200,0.6);
+    transition: all 3s ease;
 }
 </style>
 
@@ -36,11 +70,20 @@ canvas {
 
 <canvas id="galaxy"></canvas>
 
+<div class="center">
+    <h1>✨ Nuestro Universo 💖</h1>
+
+    <div class="card" id="card">
+        <img src="foto1.jpg">
+    </div>
+
+    <p>Desde que llegaste, todo es más bonito 💫</p>
+</div>
+
 <script>
 const canvas = document.getElementById("galaxy");
 const ctx = canvas.getContext("2d");
 
-/* RESPONSIVE */
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -48,99 +91,59 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-/* ===== GALAXIA ===== */
-let particles = [];
-const total = 2000;
+/* 🌌 ESTRELLAS SUAVES */
+let stars = [];
 
-for (let i = 0; i < total; i++) {
-    let angle = Math.random() * Math.PI * 2;
-    let radius = Math.random() * 350;
-
-    particles.push({
-        angle: angle,
-        radius: radius,
-        speed: 0.001 + Math.random() * 0.002,
-        size: Math.random() * 2
+for (let i = 0; i < 200; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5,
+        speed: Math.random() * 0.2
     });
 }
 
-let mouseX = 0;
-let mouseY = 0;
+function drawStars() {
+    ctx.fillStyle = "rgba(0,0,0,0.2)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-document.addEventListener("mousemove", (e) => {
-    mouseX = (e.clientX - canvas.width / 2) * 0.0005;
-    mouseY = (e.clientY - canvas.height / 2) * 0.0005;
-});
-
-/* ===== DIBUJO ===== */
-function draw() {
-
-    /* FONDO SUAVE (efecto rastro) */
-    ctx.fillStyle = "rgba(0,0,0,0.15)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    particles.forEach(p => {
-
-        p.angle += p.speed;
-
-        let x = canvas.width/2 + Math.cos(p.angle + mouseX) * p.radius;
-        let y = canvas.height/2 + Math.sin(p.angle + mouseY) * p.radius;
-
-        /* COLOR GALAXIA PRO */
-        let gradient = ctx.createRadialGradient(x,y,0,x,y,4);
-        gradient.addColorStop(0, "white");
-        gradient.addColorStop(0.2, "hotpink");
-        gradient.addColorStop(0.5, "orange");
-        gradient.addColorStop(1, "purple");
-
-        ctx.fillStyle = gradient;
+    stars.forEach(s => {
+        s.y += s.speed;
+        if (s.y > canvas.height) s.y = 0;
 
         ctx.beginPath();
-        ctx.arc(x, y, p.size, 0, Math.PI * 2);
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(255,200,230,0.8)";
         ctx.fill();
     });
-
-    /* CENTRO (agujero negro glow) */
-    let centerGradient = ctx.createRadialGradient(
-        canvas.width/2,
-        canvas.height/2,
-        0,
-        canvas.width/2,
-        canvas.height/2,
-        80
-    );
-
-    centerGradient.addColorStop(0, "black");
-    centerGradient.addColorStop(0.5, "orange");
-    centerGradient.addColorStop(1, "transparent");
-
-    ctx.fillStyle = centerGradient;
-    ctx.beginPath();
-    ctx.arc(canvas.width/2, canvas.height/2, 80, 0, Math.PI*2);
-    ctx.fill();
-
-    requestAnimationFrame(draw);
 }
 
-draw();
+function animate() {
+    drawStars();
+    requestAnimationFrame(animate);
+}
+animate();
 
-/* ===== FOTOS FLOTANTES BONITAS ===== */
+/* 💖 EFECTO SUAVE 3D */
+const card = document.getElementById("card");
 
-const fotos = [
-    "foto1.jpg",
-    "foto2.jpg",
-    "foto3.jpg",
-    "foto4.jpg"
-];
+document.addEventListener("mousemove", (e) => {
+    let x = (window.innerWidth/2 - e.pageX) / 60;
+    let y = (window.innerHeight/2 - e.pageY) / 60;
+
+    card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+});
+
+/* 📸 RECUERDOS FLOTANTES */
+const fotos = ["foto1.jpg","foto2.jpg","foto3.jpg","foto4.jpg"];
 
 document.addEventListener("mousemove", (e) => {
 
-    if (Math.random() > 0.08) return;
+    if (Math.random() > 0.06) return;
 
     let img = document.createElement("img");
-
     img.src = fotos[Math.floor(Math.random()*fotos.length)];
-    img.className = "float";
+    img.className = "memory";
 
     img.style.left = (e.clientX - 50) + "px";
     img.style.top = (e.clientY - 50) + "px";
@@ -149,18 +152,17 @@ document.addEventListener("mousemove", (e) => {
 
     setTimeout(() => {
         img.style.opacity = 1;
-        img.style.transform = "translateY(-200px) scale(1)";
+        img.style.transform = "translateY(-250px) scale(1)";
     }, 50);
 
     setTimeout(() => {
         img.style.opacity = 0;
-    }, 1800);
+    }, 2000);
 
     setTimeout(() => {
         img.remove();
-    }, 2500);
+    }, 3000);
 });
-
 </script>
 
 </body>
