@@ -2,43 +2,201 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Carolina 💖</title>
+<title>Nuestro Universo 💖</title>
 
 <style>
 body {
     margin: 0;
-    font-family: Arial;
+    overflow: hidden;
     background: black;
+    font-family: Arial;
     color: white;
-    text-align: center;
 }
 
-h1 {
-    margin-top: 40px;
-    font-size: 3em;
+/* Fondo estrellas */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
-.galeria img {
+/* Pantalla inicial */
+.intro {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.intro img {
     width: 250px;
-    margin: 10px;
-    border-radius: 15px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px white;
+}
+
+.intro h1 {
+    margin-top: 20px;
+}
+
+/* Contenido */
+.container {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    z-index: 2;
+}
+
+/* Tarjeta 3D */
+.card {
+    width: 320px;
+    margin: auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(255,255,255,0.4);
+    transition: transform 0.2s;
+}
+
+.card img {
+    width: 100%;
+}
+
+/* Corazones */
+.heart {
+    position: absolute;
+    color: pink;
+    animation: float 3s linear forwards;
+}
+
+@keyframes float {
+    to {
+        transform: translateY(-200px);
+        opacity: 0;
+    }
 }
 </style>
-
 </head>
 
 <body>
 
-<h1>🌌 Carolina 💖</h1>
-
-<p>Este es nuestro universo ✨</p>
-
-<div class="galeria">
+<!-- INTRO -->
+<div class="intro" id="intro">
     <img src="foto1.jpg">
-    <img src="foto2.jpg">
+    <h1>Haz clic para entrar a nuestro universo 💖</h1>
 </div>
 
-<p>Te amo muchísimo ❤️</p>
+<!-- MUSICA -->
+<audio id="music" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ESTRELLAS -->
+<canvas id="stars"></canvas>
+
+<div class="container">
+    <h1>🌌 Nuestro Universo 💖</h1>
+
+    <div class="card" id="card">
+        <img src="foto2.jpg">
+    </div>
+
+    <p>Contigo todo es infinito ✨</p>
+</div>
+
+<script>
+/* ===== INTRO ===== */
+const intro = document.getElementById("intro");
+const music = document.getElementById("music");
+
+intro.addEventListener("click", () => {
+    intro.style.display = "none";
+    music.play();
+});
+
+/* ===== ESTRELLAS ===== */
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+
+for (let i = 0; i < 200; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        z: Math.random() * 2
+    });
+}
+
+function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    stars.forEach(star => {
+        ctx.fillStyle = "white";
+        ctx.fillRect(star.x, star.y, star.z, star.z);
+    });
+}
+
+function moveStars(e) {
+    stars.forEach(star => {
+        star.x += (e.clientX - canvas.width/2) * 0.0003 * star.z;
+        star.y += (e.clientY - canvas.height/2) * 0.0003 * star.z;
+    });
+}
+
+document.addEventListener("mousemove", moveStars);
+
+function animate() {
+    drawStars();
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+/* ===== ESTRELLAS FUGACES ===== */
+setInterval(() => {
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 50, y + 50);
+    ctx.strokeStyle = "white";
+    ctx.stroke();
+}, 1500);
+
+/* ===== EFECTO 3D ===== */
+const card = document.getElementById("card");
+
+document.addEventListener("mousemove", (e) => {
+    let x = (window.innerWidth/2 - e.pageX) / 20;
+    let y = (window.innerHeight/2 - e.pageY) / 20;
+
+    card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+});
+
+/* ===== CORAZONES CLICK ===== */
+document.addEventListener("click", (e) => {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.style.left = e.clientX + "px";
+    heart.style.top = e.clientY + "px";
+    heart.innerHTML = "💖";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 3000);
+});
+</script>
 
 </body>
 </html>
