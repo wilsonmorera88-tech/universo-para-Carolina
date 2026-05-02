@@ -5,16 +5,21 @@
 <title>Para ti 💖</title>
 
 <style>
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    height: 100%;
     overflow: hidden;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+}
+
+/* 🌈 FONDO ANIMADO PRO */
+body {
+    background: linear-gradient(135deg, #ff758c, #ff7eb3, #a18cd1, #fbc2eb);
     background-size: 400% 400%;
     animation: fondo 12s ease infinite;
 }
 
-/* ANIMACIÓN FONDO */
 @keyframes fondo {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -29,6 +34,17 @@ body {
     perspective: 1000px;
 }
 
+/* TITULO */
+.title {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    text-align: center;
+    font-size: 2.5em;
+    color: white;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
 /* TARJETA CENTRAL */
 .card {
     position: absolute;
@@ -38,8 +54,7 @@ body {
     width: 300px;
     border-radius: 25px;
     overflow: hidden;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.5);
     transition: transform 0.3s ease;
 }
 
@@ -47,38 +62,38 @@ body {
     width: 100%;
 }
 
-/* TEXTO */
-.title {
-    position: absolute;
-    top: 10%;
-    width: 100%;
-    text-align: center;
-    font-size: 2.5em;
-    color: white;
-    text-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
 /* FOTOS FLOTANTES */
 .memory {
     position: absolute;
     width: 120px;
     border-radius: 20px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    transition: transform 1.5s ease, opacity 1.5s ease;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
     opacity: 0;
+    transition: all 2s ease;
 }
 
-/* CORAZONES SUAVES */
+/* CORAZONES */
 .heart {
     position: absolute;
     font-size: 18px;
     animation: subir 4s ease forwards;
-    opacity: 0.8;
 }
 
 @keyframes subir {
     0% { transform: translateY(0) scale(0.8); opacity: 1; }
     100% { transform: translateY(-200px) scale(1.2); opacity: 0; }
+}
+
+/* MENSAJE */
+.message {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2em;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.5s;
 }
 </style>
 
@@ -96,11 +111,14 @@ body {
 
 </div>
 
+<div class="message" id="message"></div>
+
 <script>
 
 const card = document.getElementById("card");
+const message = document.getElementById("message");
 
-/* 3D SUAVE */
+/* 🖱️ EFECTO 3D SUAVE */
 document.addEventListener("mousemove", (e) => {
     let x = (window.innerWidth/2 - e.clientX) / 40;
     let y = (window.innerHeight/2 - e.clientY) / 40;
@@ -108,15 +126,20 @@ document.addEventListener("mousemove", (e) => {
     card.style.transform = `translate(-50%, -50%) rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* FOTOS FLOTANTES BONITAS */
-const fotos = ["foto1.jpg","foto2.jpg","foto3.jpg","foto4.jpg"];
+/* 📸 FOTOS + MENSAJES */
+const recuerdos = [
+    {img:"foto2.jpg", msg:"Nuestro primer momento 💖"},
+    {img:"foto3.jpg", msg:"Aquí empezó todo ✨"},
+    {img:"foto4.jpg", msg:"Eres lo mejor 💕"}
+];
 
-document.addEventListener("mousemove", (e) => {
+document.addEventListener("click", (e) => {
 
-    if (Math.random() > 0.05) return;
+    let r = recuerdos[Math.floor(Math.random()*recuerdos.length)];
 
+    /* FOTO */
     let img = document.createElement("img");
-    img.src = fotos[Math.floor(Math.random()*fotos.length)];
+    img.src = r.img;
     img.className = "memory";
 
     img.style.left = e.clientX + "px";
@@ -126,19 +149,20 @@ document.addEventListener("mousemove", (e) => {
 
     setTimeout(() => {
         img.style.opacity = 1;
-        img.style.transform = "translateY(-150px) scale(1)";
+        img.style.transform = "translateY(-150px)";
     }, 50);
 
-    setTimeout(() => {
-        img.style.opacity = 0;
-    }, 1500);
-
     setTimeout(() => img.remove(), 2000);
-});
 
-/* CORAZONES DELICADOS */
-document.addEventListener("click", (e) => {
+    /* MENSAJE */
+    message.innerText = r.msg;
+    message.style.opacity = 1;
 
+    setTimeout(() => {
+        message.style.opacity = 0;
+    }, 2000);
+
+    /* CORAZÓN */
     let heart = document.createElement("div");
     heart.className = "heart";
     heart.innerHTML = "💖";
@@ -150,6 +174,7 @@ document.addEventListener("click", (e) => {
 
     setTimeout(() => heart.remove(), 4000);
 });
+
 </script>
 
 </body>
