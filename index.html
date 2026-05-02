@@ -2,143 +2,188 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Nuestro Mundo 💖</title>
+<title>Para ti 💖</title>
 
 <style>
 body {
     margin: 0;
     overflow: hidden;
     background: radial-gradient(circle at center, #1a001f, #000);
+    perspective: 1000px;
     font-family: Arial;
     color: white;
-    perspective: 1000px;
 }
 
-/* CONTENEDOR 3D */
-.scene {
+/* INTRO */
+.intro {
     position: absolute;
     width: 100%;
     height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.intro img {
+    width: 250px;
+    border-radius: 20px;
+    box-shadow: 0 0 40px pink;
+}
+
+/* ESCENA */
+.scene {
+    width: 100%;
+    height: 100vh;
+    position: relative;
     transform-style: preserve-3d;
 }
 
-/* CAPAS */
-.layer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-/* PARTÍCULAS */
-.particle {
-    position: absolute;
-    border-radius: 50%;
-    background: radial-gradient(circle, #ff9ad5, transparent);
-    opacity: 0.8;
-}
-
-/* FOTO CENTRAL */
-.card {
+/* CENTRO */
+.center {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 260px;
+    transform: translate(-50%, -50%) translateZ(100px);
+    text-align: center;
+}
+
+.center img {
+    width: 220px;
     border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 0 60px rgba(255,100,200,0.8);
-    z-index: 5;
-}
-
-.card img {
-    width: 100%;
-}
-
-/* FOTOS FLOTANTES */
-.memory {
-    position: absolute;
-    width: 100px;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(255,150,200,0.8);
-    transform: translateZ(0px);
-    transition: transform 0.3s;
+    box-shadow: 0 0 50px rgba(255,100,200,0.8);
 }
 
 /* TEXTO */
 .title {
+    margin-top: 10px;
+    font-size: 2em;
+    text-shadow: 0 0 25px rgba(255,150,200,0.8);
+}
+
+/* PLANETAS */
+.planet {
     position: absolute;
-    top: 15%;
+    width: 100px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(255,150,200,0.7);
+    cursor: pointer;
+}
+
+/* MENSAJE */
+.message {
+    position: absolute;
+    bottom: 20px;
     width: 100%;
     text-align: center;
-    font-size: 2.5em;
-    text-shadow: 0 0 30px rgba(255,150,200,0.8);
+    font-size: 1.2em;
+    opacity: 0;
+    transition: opacity 0.5s;
 }
 </style>
 </head>
 
 <body>
 
+<!-- INTRO -->
+<div class="intro" id="intro">
+    <img src="foto1.jpg">
+    <h2>Haz click para entrar a nuestro universo 💖</h2>
+</div>
+
+<!-- MUSICA -->
+<audio id="music" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
 <div class="scene" id="scene">
 
-    <div class="layer" id="layer1"></div>
-    <div class="layer" id="layer2"></div>
-
-    <div class="card">
+    <div class="center">
         <img src="foto1.jpg">
+        <div class="title">💖 Nuestro Universo 💖</div>
     </div>
-
-    <div class="title">💖 Nuestro Mundo 💖</div>
 
 </div>
 
+<div class="message" id="message"></div>
+
 <script>
+const intro = document.getElementById("intro");
+const music = document.getElementById("music");
 const scene = document.getElementById("scene");
+const message = document.getElementById("message");
 
-/* ===== PARTÍCULAS ===== */
-function crearParticulas(layer, cantidad, profundidad) {
-    for (let i = 0; i < cantidad; i++) {
-        let p = document.createElement("div");
-        p.className = "particle";
+/* ENTRAR */
+intro.addEventListener("click", () => {
+    intro.style.display = "none";
+    music.play();
+});
 
-        let size = Math.random() * 6 + 2;
+/* FOTOS Y MENSAJES */
+const recuerdos = [
+    {img:"foto2.jpg", msg:"Nuestro primer momento juntos 💖"},
+    {img:"foto3.jpg", msg:"Aquí supe que eras especial ✨"},
+    {img:"foto4.jpg", msg:"No cambio esto por nada 💕"},
+    {img:"foto5.jpg", msg:"Contigo todo es mejor 🌎"}
+];
 
-        p.style.width = size + "px";
-        p.style.height = size + "px";
+/* CREAR ORBITA */
+function crearOrbita(radio, velocidad, data) {
 
-        p.style.left = Math.random() * 100 + "%";
-        p.style.top = Math.random() * 100 + "%";
+    let angulo = 0;
+    let elementos = [];
 
-        p.style.transform = `translateZ(${profundidad}px)`;
+    data.forEach(d => {
+        let img = document.createElement("img");
+        img.src = d.img;
+        img.className = "planet";
 
-        layer.appendChild(p);
+        img.onclick = () => {
+            message.innerText = d.msg;
+            message.style.opacity = 1;
+
+            setTimeout(() => {
+                message.style.opacity = 0;
+            }, 3000);
+        };
+
+        scene.appendChild(img);
+        elementos.push(img);
+    });
+
+    function animar() {
+        angulo += velocidad;
+
+        elementos.forEach((el, i) => {
+            let a = angulo + (i * (360 / elementos.length)) * Math.PI / 180;
+
+            let x = Math.cos(a) * radio;
+            let y = Math.sin(a) * radio;
+
+            el.style.transform = `
+                translateX(${x}px)
+                translateY(${y}px)
+                translateZ(${Math.sin(a)*120}px)
+            `;
+        });
+
+        requestAnimationFrame(animar);
     }
+
+    animar();
 }
 
-crearParticulas(document.getElementById("layer1"), 80, -100);
-crearParticulas(document.getElementById("layer2"), 60, 100);
+/* ORBITAS */
+crearOrbita(150, 0.01, recuerdos);
+crearOrbita(250, 0.005, recuerdos);
 
-/* ===== FOTOS EN 3D ===== */
-const fotos = ["foto1.jpg","foto2.jpg","foto3.jpg","foto4.jpg"];
-
-for (let i = 0; i < 8; i++) {
-    let img = document.createElement("img");
-    img.src = fotos[i % fotos.length];
-    img.className = "memory";
-
-    img.style.left = Math.random() * 90 + "%";
-    img.style.top = Math.random() * 90 + "%";
-
-    let z = Math.random() * 400 - 200;
-    img.style.transform = `translateZ(${z}px)`;
-
-    scene.appendChild(img);
-}
-
-/* ===== MOVIMIENTO 3D ===== */
+/* MOUSE 3D */
 document.addEventListener("mousemove", (e) => {
-
-    let x = (window.innerWidth/2 - e.clientX) / 40;
-    let y = (window.innerHeight/2 - e.clientY) / 40;
+    let x = (window.innerWidth/2 - e.clientX) / 50;
+    let y = (window.innerHeight/2 - e.clientY) / 50;
 
     scene.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
