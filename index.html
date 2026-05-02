@@ -2,29 +2,34 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Galaxia 💖</title>
+<title>Nuestro Universo 💖</title>
 
 <style>
 body {
     margin: 0;
     overflow: hidden;
     background: black;
+    font-family: Arial;
 }
 
-/* canvas */
+/* CANVAS */
 canvas {
     display: block;
 }
 
-/* imágenes flotantes */
+/* IMÁGENES FLOTANTES */
 .float {
     position: absolute;
-    width: 90px;
+    width: 100px;
     border-radius: 50%;
     pointer-events: none;
-    box-shadow: 0 0 20px rgba(255,100,200,0.8);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 2.5s ease;
+    box-shadow: 0 0 25px rgba(255,100,200,0.8);
 }
 </style>
+
 </head>
 
 <body>
@@ -35,16 +40,21 @@ canvas {
 const canvas = document.getElementById("galaxy");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+/* RESPONSIVE */
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
 /* ===== GALAXIA ===== */
 let particles = [];
-const total = 1500;
+const total = 2000;
 
 for (let i = 0; i < total; i++) {
     let angle = Math.random() * Math.PI * 2;
-    let radius = Math.random() * 300;
+    let radius = Math.random() * 350;
 
     particles.push({
         angle: angle,
@@ -62,54 +72,95 @@ document.addEventListener("mousemove", (e) => {
     mouseY = (e.clientY - canvas.height / 2) * 0.0005;
 });
 
+/* ===== DIBUJO ===== */
 function draw() {
-    ctx.fillStyle = "rgba(0,0,0,0.2)";
+
+    /* FONDO SUAVE (efecto rastro) */
+    ctx.fillStyle = "rgba(0,0,0,0.15)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     particles.forEach(p => {
+
         p.angle += p.speed;
 
         let x = canvas.width/2 + Math.cos(p.angle + mouseX) * p.radius;
         let y = canvas.height/2 + Math.sin(p.angle + mouseY) * p.radius;
 
-        /* COLOR GALAXIA */
-        let gradient = ctx.createRadialGradient(x,y,0,x,y,3);
+        /* COLOR GALAXIA PRO */
+        let gradient = ctx.createRadialGradient(x,y,0,x,y,4);
         gradient.addColorStop(0, "white");
-        gradient.addColorStop(0.3, "pink");
+        gradient.addColorStop(0.2, "hotpink");
+        gradient.addColorStop(0.5, "orange");
         gradient.addColorStop(1, "purple");
 
         ctx.fillStyle = gradient;
+
         ctx.beginPath();
         ctx.arc(x, y, p.size, 0, Math.PI * 2);
         ctx.fill();
     });
+
+    /* CENTRO (agujero negro glow) */
+    let centerGradient = ctx.createRadialGradient(
+        canvas.width/2,
+        canvas.height/2,
+        0,
+        canvas.width/2,
+        canvas.height/2,
+        80
+    );
+
+    centerGradient.addColorStop(0, "black");
+    centerGradient.addColorStop(0.5, "orange");
+    centerGradient.addColorStop(1, "transparent");
+
+    ctx.fillStyle = centerGradient;
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, canvas.height/2, 80, 0, Math.PI*2);
+    ctx.fill();
 
     requestAnimationFrame(draw);
 }
 
 draw();
 
-/* ===== FOTOS FLOTANTES ===== */
-const fotos = ["foto1.jpg","foto2.jpg","foto3.jpg"];
+/* ===== FOTOS FLOTANTES BONITAS ===== */
 
-document.addEventListener("click", (e) => {
+const fotos = [
+    "foto1.jpg",
+    "foto2.jpg",
+    "foto3.jpg",
+    "foto4.jpg"
+];
+
+document.addEventListener("mousemove", (e) => {
+
+    if (Math.random() > 0.08) return;
 
     let img = document.createElement("img");
+
     img.src = fotos[Math.floor(Math.random()*fotos.length)];
     img.className = "float";
 
-    img.style.left = e.clientX + "px";
-    img.style.top = e.clientY + "px";
+    img.style.left = (e.clientX - 50) + "px";
+    img.style.top = (e.clientY - 50) + "px";
 
     document.body.appendChild(img);
 
     setTimeout(() => {
-        img.style.transform = "translateY(-200px)";
-        img.style.opacity = 0;
-    }, 100);
+        img.style.opacity = 1;
+        img.style.transform = "translateY(-200px) scale(1)";
+    }, 50);
 
-    setTimeout(() => img.remove(), 2000);
+    setTimeout(() => {
+        img.style.opacity = 0;
+    }, 1800);
+
+    setTimeout(() => {
+        img.remove();
+    }, 2500);
 });
+
 </script>
 
 </body>
