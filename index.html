@@ -2,133 +2,101 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Universo 💖</title>
+<title>Galaxia 💖</title>
 
 <style>
 body {
     margin: 0;
     overflow: hidden;
     background: black;
-    color: white;
-    font-family: Arial;
 }
 
 /* canvas */
-#stars {
-    position: fixed;
-    top: 0;
-    left: 0;
+canvas {
+    display: block;
 }
 
-/* contenido */
-.container {
-    position: absolute;
-    width: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: center;
-}
-
-.card {
-    width: 280px;
-    margin: auto;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(255,255,255,0.3);
-    transition: transform 0.3s ease;
-}
-
-.card img {
-    width: 100%;
-}
-
-/* imagen flotante */
-.float-img {
+/* imágenes flotantes */
+.float {
     position: absolute;
     width: 90px;
-    border-radius: 12px;
+    border-radius: 50%;
     pointer-events: none;
-    opacity: 0;
-    box-shadow: 0 0 20px rgba(255,255,255,0.6);
-    transition: all 2s ease;
+    box-shadow: 0 0 20px rgba(255,100,200,0.8);
 }
 </style>
-
 </head>
 
 <body>
 
-<canvas id="stars"></canvas>
-
-<div class="container">
-    <h1>🌌 Nuestro Universo 💖</h1>
-
-    <div class="card" id="card">
-        <img src="foto1.jpg">
-    </div>
-
-    <p>Todo contigo es magia ✨</p>
-</div>
+<canvas id="galaxy"></canvas>
 
 <script>
-
-/* CANVAS SEGURO */
-const canvas = document.getElementById("stars");
+const canvas = document.getElementById("galaxy");
 const ctx = canvas.getContext("2d");
 
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-/* estrellas */
-let stars = [];
+/* ===== GALAXIA ===== */
+let particles = [];
+const total = 1500;
 
-for (let i = 0; i < 100; i++) {
-    stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 2
+for (let i = 0; i < total; i++) {
+    let angle = Math.random() * Math.PI * 2;
+    let radius = Math.random() * 300;
+
+    particles.push({
+        angle: angle,
+        radius: radius,
+        speed: 0.001 + Math.random() * 0.002,
+        size: Math.random() * 2
     });
 }
 
+let mouseX = 0;
+let mouseY = 0;
+
+document.addEventListener("mousemove", (e) => {
+    mouseX = (e.clientX - canvas.width / 2) * 0.0005;
+    mouseY = (e.clientY - canvas.height / 2) * 0.0005;
+});
+
 function draw() {
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "rgba(0,0,0,0.2)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "white";
-    stars.forEach(s => {
+    particles.forEach(p => {
+        p.angle += p.speed;
+
+        let x = canvas.width/2 + Math.cos(p.angle + mouseX) * p.radius;
+        let y = canvas.height/2 + Math.sin(p.angle + mouseY) * p.radius;
+
+        /* COLOR GALAXIA */
+        let gradient = ctx.createRadialGradient(x,y,0,x,y,3);
+        gradient.addColorStop(0, "white");
+        gradient.addColorStop(0.3, "pink");
+        gradient.addColorStop(1, "purple");
+
+        ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.arc(x, y, p.size, 0, Math.PI * 2);
         ctx.fill();
     });
 
     requestAnimationFrame(draw);
 }
+
 draw();
 
-/* 3D */
-const card = document.getElementById("card");
+/* ===== FOTOS FLOTANTES ===== */
+const fotos = ["foto1.jpg","foto2.jpg","foto3.jpg"];
 
-document.addEventListener("mousemove", (e) => {
-    let x = (window.innerWidth/2 - e.pageX) / 40;
-    let y = (window.innerHeight/2 - e.pageY) / 40;
-
-    card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-});
-
-/* imágenes flotantes */
-const imgs = ["foto1.jpg","foto2.jpg","foto3.jpg"];
-
-document.addEventListener("mousemove", (e) => {
-
-    if (Math.random() > 0.1) return;
+document.addEventListener("click", (e) => {
 
     let img = document.createElement("img");
-    img.src = imgs[Math.floor(Math.random() * imgs.length)];
-    img.className = "float-img";
+    img.src = fotos[Math.floor(Math.random()*fotos.length)];
+    img.className = "float";
 
     img.style.left = e.clientX + "px";
     img.style.top = e.clientY + "px";
@@ -136,13 +104,12 @@ document.addEventListener("mousemove", (e) => {
     document.body.appendChild(img);
 
     setTimeout(() => {
-        img.style.opacity = 1;
-        img.style.transform = "translateY(-150px)";
-    }, 50);
+        img.style.transform = "translateY(-200px)";
+        img.style.opacity = 0;
+    }, 100);
 
     setTimeout(() => img.remove(), 2000);
 });
-
 </script>
 
 </body>
