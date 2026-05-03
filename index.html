@@ -33,42 +33,52 @@ html, body {
     position: absolute;
     border-radius: 50%;
     background: white;
-    box-shadow: 0 0 10px white;
+    box-shadow: 0 0 8px white;
 }
 
-/* TEXTO */
+/* TEXTO GRANDE */
 .texto {
     position: absolute;
     top: 10%;
     width: 100%;
     text-align: center;
     color: white;
-    font-size: 1.4em;
-    text-shadow: 0 0 20px pink;
+
+    font-size: 2.2em;
+    line-height: 1.4;
+
+    text-shadow:
+        0 0 10px pink,
+        0 0 20px pink,
+        0 0 40px rgba(255,105,180,0.6);
+
     z-index: 10;
     padding: 0 20px;
 }
 
-/* LUNA REAL */
+/* 🌙 LUNA REAL */
 .moon {
     position: absolute;
     top: 55%;
     left: 50%;
-    width: 220px;
-    height: 220px;
+    width: 240px;
+    height: 240px;
     border-radius: 50%;
     transform: translate(-50%, -50%) translateZ(200px);
 
     background: url('https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg');
     background-size: cover;
+    background-position: center;
 
+    /* SOMBRA REALISTA (SIN HALO) */
     box-shadow:
-        inset -50px -40px 70px rgba(0,0,0,0.7),
-        inset 20px 20px 30px rgba(255,255,255,0.2),
-        0 0 40px rgba(255,255,255,0.3);
+        inset -60px -40px 80px rgba(0,0,0,0.8),
+        inset 25px 25px 40px rgba(255,255,255,0.15);
+
+    filter: contrast(1.1) brightness(1.05);
 }
 
-/* BOTÓN PERMISO */
+/* BOTÓN */
 .btn {
     position: absolute;
     bottom: 30px;
@@ -91,8 +101,10 @@ html, body {
 <div class="universe" id="universe">
 
 <div class="texto">
-💖 Carolina…<br>
-Eres mi universo entero ✨🌙
+💖 Carolina…<br><br>
+Eres lo más bonito que me ha pasado ✨<br>
+y si el universo es infinito…<br>
+mi amor por ti también lo es 🌙💕
 </div>
 
 <div class="moon"></div>
@@ -105,7 +117,7 @@ Eres mi universo entero ✨🌙
 <script>
 const universe = document.getElementById("universe");
 
-/* ESTRELLAS */
+/* ⭐ ESTRELLAS 3D */
 for (let i = 0; i < 400; i++) {
     let star = document.createElement("div");
     star.className = "star";
@@ -123,7 +135,7 @@ for (let i = 0; i < 400; i++) {
     universe.appendChild(star);
 }
 
-/* MOUSE (PC) */
+/* 🖱️ MOUSE */
 document.addEventListener("mousemove", (e) => {
     let x = (window.innerWidth/2 - e.clientX) / 30;
     let y = (window.innerHeight/2 - e.clientY) / 30;
@@ -131,7 +143,7 @@ document.addEventListener("mousemove", (e) => {
     universe.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* 📱 MOVIMIENTO CELULAR */
+/* 📱 SENSOR CELULAR */
 function activarMovimiento() {
 
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -147,8 +159,8 @@ function activarMovimiento() {
 }
 
 function mover(event) {
-    let x = event.gamma; // izquierda-derecha
-    let y = event.beta;  // adelante-atrás
+    let x = event.gamma;
+    let y = event.beta;
 
     universe.style.transform = `
         rotateY(${x}deg)
