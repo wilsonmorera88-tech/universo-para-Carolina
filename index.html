@@ -9,6 +9,7 @@ body {
     margin: 0;
     overflow: hidden;
     background: black;
+    font-family: Arial;
 }
 
 .texto {
@@ -18,7 +19,6 @@ body {
     text-align: center;
     color: white;
     font-size: 1.5em;
-    font-family: Arial;
     text-shadow: 0 0 20px pink;
 }
 </style>
@@ -28,13 +28,13 @@ body {
 <body>
 
 <div class="texto">
-💖 En todos los universos… siempre te elegiría a ti ✨
+💖 En todo el universo… tú eres mi hogar ✨
 </div>
 
-<!-- THREE MODERNO -->
-<script type="module">
+<!-- THREE CLÁSICO -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-import * as THREE from "https://unpkg.com/three@0.152.2/build/three.module.js";
+<script>
 
 /* ESCENA */
 const scene = new THREE.Scene();
@@ -54,7 +54,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-/* LUZ */
+/* LUCES */
 const light = new THREE.PointLight(0xffffff, 2);
 light.position.set(5,5,5);
 scene.add(light);
@@ -73,16 +73,16 @@ const ringTexture = loader.load(
 );
 
 /* PLANETA */
-const geometry = new THREE.SphereGeometry(1, 64, 64);
-const material = new THREE.MeshStandardMaterial({
+const saturnGeo = new THREE.SphereGeometry(1, 64, 64);
+const saturnMat = new THREE.MeshStandardMaterial({
     map: saturnTexture
 });
 
-const saturn = new THREE.Mesh(geometry, material);
+const saturn = new THREE.Mesh(saturnGeo, saturnMat);
 scene.add(saturn);
 
-/* ANILLOS */
-const ringGeo = new THREE.RingGeometry(1.4, 2.3, 64);
+/* ANILLOS (MEJORADOS) */
+const ringGeo = new THREE.RingGeometry(1.4, 2.5, 128);
 const ringMat = new THREE.MeshBasicMaterial({
     map: ringTexture,
     side: THREE.DoubleSide,
@@ -90,38 +90,42 @@ const ringMat = new THREE.MeshBasicMaterial({
 });
 
 const ring = new THREE.Mesh(ringGeo, ringMat);
-ring.rotation.x = Math.PI / 2.5;
+
+/* IMPORTANTE: alineación correcta */
+ring.rotation.x = Math.PI / 2.4;
+
 scene.add(ring);
 
 /* ESTRELLAS */
 const starsGeometry = new THREE.BufferGeometry();
-const stars = [];
+const starsCount = 3000;
+const positions = [];
 
-for (let i = 0; i < 2000; i++) {
-    stars.push(
-        (Math.random() - 0.5) * 200,
-        (Math.random() - 0.5) * 200,
-        (Math.random() - 0.5) * 200
-    );
+for (let i = 0; i < starsCount; i++) {
+    positions.push((Math.random() - 0.5) * 300);
+    positions.push((Math.random() - 0.5) * 300);
+    positions.push((Math.random() - 0.5) * 300);
 }
 
 starsGeometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(stars, 3)
+    'position',
+    new THREE.Float32BufferAttribute(positions, 3)
 );
 
 const starsMaterial = new THREE.PointsMaterial({
     color: 0xffffff,
-    size: 0.1
+    size: 0.15
 });
 
-const starField = new THREE.Points(starsGeometry, starsMaterial);
-scene.add(starField);
+const stars = new THREE.Points(starsGeometry, starsMaterial);
+scene.add(stars);
 
 /* ANIMACIÓN */
 function animate() {
+
     requestAnimationFrame(animate);
 
+    /* ROTACIÓN NATURAL */
     saturn.rotation.y += 0.002;
     ring.rotation.z += 0.001;
 
@@ -130,13 +134,16 @@ function animate() {
 
 animate();
 
-/* MOUSE */
+/* 🖱️ INTERACCIÓN REAL */
 document.addEventListener("mousemove", (e) => {
+
     let x = (e.clientX / window.innerWidth - 0.5);
     let y = (e.clientY / window.innerHeight - 0.5);
 
-    saturn.rotation.y += x * 0.05;
-    saturn.rotation.x += y * 0.05;
+    saturn.rotation.y += x * 0.03;
+    saturn.rotation.x += y * 0.02;
+
+    ring.rotation.z += x * 0.01;
 });
 
 /* RESPONSIVE */
