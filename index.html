@@ -75,7 +75,23 @@ html, body {
         inset -20px -15px 40px rgba(0,0,0,0.4),
         inset 15px 15px 30px rgba(255,255,255,0.1);
 
-    opacity: 1;
+    animation: brillo 2s infinite alternate;
+}
+
+/* BRILLO */
+@keyframes brillo {
+    from {
+        box-shadow:
+            inset -20px -15px 40px rgba(0,0,0,0.4),
+            inset 15px 15px 30px rgba(255,255,255,0.1),
+            0 0 10px rgba(255,105,180,0.3);
+    }
+    to {
+        box-shadow:
+            inset -20px -15px 40px rgba(0,0,0,0.4),
+            inset 15px 15px 30px rgba(255,255,255,0.1),
+            0 0 30px rgba(255,105,180,0.8);
+    }
 }
 
 /* FOTO */
@@ -97,6 +113,26 @@ html, body {
 .foto.show {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+}
+
+/* INDICADOR */
+.indicador {
+    position: absolute;
+    top: 72%;
+    width: 100%;
+    text-align: center;
+    color: pink;
+    font-size: 1.4em;
+
+    text-shadow: 0 0 10px pink;
+    animation: flotar 1.5s infinite;
+
+    z-index: 15;
+}
+
+@keyframes flotar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
 /* BOTÓN */
@@ -130,14 +166,14 @@ lo más bonito que me ha pasado 💕<br><br>
 Espero que cuando despiertes y veas esto,<br>
 sepas que pensé en ti 💖<br><br>
 
-Toca la luna 🌙✨<br><br>
-
 Feliz cumpleaños 🎂💖<br>
 Te amo muchísimo 💕
 </div>
 
 <div class="moon" id="moon" onclick="cambiar()"></div>
 <div class="foto" id="foto"></div>
+
+<div class="indicador">👇 Toca la luna 🌙</div>
 
 </div>
 </div>
@@ -177,9 +213,16 @@ document.addEventListener("mousemove", (e) => {
 function cambiar() {
     document.getElementById("moon").classList.add("hide");
     document.getElementById("foto").classList.add("show");
+
+    const indicador = document.querySelector(".indicador");
+    if (indicador) {
+        indicador.style.opacity = "0";
+        indicador.style.transition = "opacity 0.5s";
+        setTimeout(() => indicador.remove(), 500);
+    }
 }
 
-/* 📱 ACTIVAR MOVIMIENTO */
+/* CELULAR */
 function activarMovimiento() {
 
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -194,10 +237,9 @@ function activarMovimiento() {
     }
 }
 
-/* 📱 MOVIMIENTO REAL */
 function mover(event) {
-    let x = event.gamma; // izquierda-derecha
-    let y = event.beta;  // adelante-atrás
+    let x = event.gamma;
+    let y = event.beta;
 
     universe.style.transform = `
         rotateY(${x}deg)
