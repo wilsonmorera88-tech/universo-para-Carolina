@@ -9,7 +9,7 @@ html, body {
     margin: 0;
     height: 100%;
     overflow: hidden;
-    background: radial-gradient(circle at center, #050010, #000);
+    background: radial-gradient(circle at center, #070012, #000);
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -36,7 +36,7 @@ html, body {
     box-shadow: 0 0 8px rgba(255,255,255,0.8);
 }
 
-/* TEXTO */
+/* 💌 TEXTO */
 .texto {
     position: absolute;
     top: 10%;
@@ -47,8 +47,8 @@ html, body {
     text-shadow: 0 0 20px pink;
 }
 
-/* 🌍 JÚPITER */
-.jupiter {
+/* 🪐 SATURNO */
+.saturn {
     position: absolute;
     top: 55%;
     left: 50%;
@@ -57,54 +57,57 @@ html, body {
     border-radius: 50%;
     transform: translate(-50%, -50%) translateZ(200px);
 
-    /* TEXTURA REALISTA */
-    background: radial-gradient(circle at 30% 30%, #f5c27a, #c97b3b, #7a3f1c);
+    /* COLOR SUAVE REALISTA */
+    background: radial-gradient(circle at 30% 30%, #f5deb3, #d2a679, #8c6239);
 
+    /* SOMBRAS */
     box-shadow:
-        inset -40px -40px 80px rgba(0,0,0,0.7),
+        inset -40px -40px 80px rgba(0,0,0,0.6),
         inset 20px 20px 40px rgba(255,255,255,0.2),
-        0 0 80px rgba(255,180,120,0.6);
+        0 0 60px rgba(255,200,150,0.5);
 
-    animation: girar 30s linear infinite;
+    animation: rotar 40s linear infinite;
 }
 
-/* BANDAS DE JÚPITER */
-.jupiter::before {
+/* TEXTURA SUAVE */
+.saturn::before {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
     border-radius: 50%;
+
     background: repeating-linear-gradient(
         to bottom,
-        rgba(255,200,150,0.2),
-        rgba(255,200,150,0.2) 10px,
-        rgba(150,80,40,0.2) 20px
+        rgba(255,255,255,0.08),
+        rgba(255,255,255,0.08) 6px,
+        rgba(0,0,0,0.05) 12px
     );
 }
 
-/* ANILLOS */
+/* 💍 ANILLOS */
 .ring {
     position: absolute;
     top: 55%;
     left: 50%;
-    width: 400px;
-    height: 120px;
+    width: 420px;
+    height: 140px;
     border-radius: 50%;
     transform: translate(-50%, -50%) rotateX(75deg) translateZ(190px);
 
     background: radial-gradient(
         ellipse at center,
-        rgba(255,220,180,0.4) 20%,
-        rgba(200,150,100,0.3) 40%,
+        rgba(255,230,180,0.6) 20%,
+        rgba(200,170,120,0.4) 40%,
         rgba(0,0,0,0) 70%
     );
 
-    box-shadow: 0 0 40px rgba(255,200,150,0.4);
+    box-shadow:
+        0 0 40px rgba(255,220,150,0.4);
 }
 
 /* ROTACIÓN */
-@keyframes girar {
+@keyframes rotar {
     from { transform: translate(-50%, -50%) translateZ(200px) rotate(0deg); }
     to { transform: translate(-50%, -50%) translateZ(200px) rotate(360deg); }
 }
@@ -132,12 +135,12 @@ html, body {
 <div class="universe" id="universe">
 
     <div class="texto">
-        💖 En este universo infinito…<br>
-        tú eres mi planeta favorito ✨
+        💖 Si tuviera que elegir un planeta…<br>
+        elegiría quedarme contigo en todos los universos ✨
     </div>
 
     <div class="ring"></div>
-    <div class="jupiter"></div>
+    <div class="saturn"></div>
 
 </div>
 </div>
