@@ -1,197 +1,95 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Nuestro Universo 💖</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Universo 🪐</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #050510;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
 
-<style>
-html, body {
-    margin: 0;
-    height: 100%;
-    overflow: hidden;
-    background: radial-gradient(circle at center, #0a0012, #000);
-    font-family: Arial;
-}
+        /* Fondo de estrellas */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent url('https://githubusercontent.com') repeat;
+            animation: moveStars 100s linear infinite;
+        }
 
-/* ESCENA 3D */
-.scene {
-    width: 100%;
-    height: 100vh;
-    perspective: 1200px;
-    overflow: hidden;
-}
+        @keyframes moveStars {
+            from { background-position: 0 0; }
+            to { background-position: -10000px 5000px; }
+        }
 
-/* UNIVERSO */
-.universe {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.2s ease;
-}
+        /* Contenedor Principal */
+        .container {
+            z-index: 10;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(100, 100, 255, 0.2);
+            max-width: 80%;
+        }
 
-/* ESTRELLAS */
-.star {
-    position: absolute;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 0 10px rgba(255,255,255,0.8);
-}
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #a18cd1, #fbc2eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-/* CORAZONES */
-.heart {
-    position: absolute;
-    font-size: 18px;
-    pointer-events: none;
-    animation: float 4s ease forwards;
-}
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #d1d1d1;
+        }
 
-@keyframes float {
-    to {
-        transform: translateY(-200px);
-        opacity: 0;
-    }
-}
+        .heart {
+            color: #ff4d4d;
+            font-size: 2em;
+            animation: pulse 1.5s infinite;
+        }
 
-/* FOTO CENTRAL */
-.center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) translateZ(150px);
-}
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
 
-.center img {
-    width: 260px;
-    border-radius: 20px;
-    box-shadow: 0 0 60px rgba(255,100,200,0.8);
-}
-
-/* PLANETAS (FOTOS) */
-.planet {
-    position: absolute;
-    width: 100px;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(255,150,200,0.7);
-    transition: transform 0.3s;
-}
-
-/* TEXTO */
-.title {
-    position: absolute;
-    top: 10%;
-    width: 100%;
-    text-align: center;
-    font-size: 2.5em;
-    color: white;
-    text-shadow: 0 0 30px pink;
-}
-</style>
-
+        .footer-text {
+            font-size: 0.8em;
+            margin-top: 30px;
+            opacity: 0.7;
+        }
+    </style>
 </head>
-
 <body>
-
-<div class="scene">
-    <div class="universe" id="universe">
-
-        <div class="title">💖 Nuestro Universo 💖</div>
-
-        <div class="center">
-            <img src="foto1.jpeg">
-        </div>
-
+    <div class="stars"></div>
+    <div class="container">
+        <!-- EDITABLE: Tu mensaje aquí -->
+        <h1>Hola, mi universo 🌌</h1>
+        <p>
+            Eres la razón por la que mi cielo siempre está iluminado.<br>
+            Cada estrella me recuerda a ti. <br>
+            Gracias por ser mi lugar favorito.
+        </p>
+        <div class="heart">❤️</div>
+        <p class="footer-text">Te amo por siempre.</p>
     </div>
-</div>
-
-<script>
-const universe = document.getElementById("universe");
-
-/* ⭐ CREAR ESTRELLAS EN PROFUNDIDAD */
-for (let i = 0; i < 250; i++) {
-    let star = document.createElement("div");
-    star.className = "star";
-
-    let size = Math.random() * 3;
-
-    star.style.width = size + "px";
-    star.style.height = size + "px";
-
-    star.style.left = Math.random() * 100 + "%";
-    star.style.top = Math.random() * 100 + "%";
-
-    let z = Math.random() * 800 - 400;
-    star.style.transform = `translateZ(${z}px)`;
-
-    universe.appendChild(star);
-}
-
-/* 🪐 PLANETAS (FOTOS) */
-const fotos = ["foto2.jpg","foto3.jpg","foto4.jpg","foto5.jpg"];
-
-let angle = 0;
-
-let planets = [];
-
-fotos.forEach((f, i) => {
-    let img = document.createElement("img");
-    img.src = f;
-    img.className = "planet";
-    universe.appendChild(img);
-    planets.push(img);
-});
-
-/* ORBITA */
-function animatePlanets() {
-    angle += 0.005;
-
-    planets.forEach((p, i) => {
-        let a = angle + (i * (Math.PI * 2 / planets.length));
-
-        let r = 200 + i * 40;
-
-        let x = Math.cos(a) * r;
-        let y = Math.sin(a) * r;
-
-        let z = Math.sin(a) * 150;
-
-        p.style.transform = `
-            translateX(${x}px)
-            translateY(${y}px)
-            translateZ(${z}px)
-        `;
-    });
-
-    requestAnimationFrame(animatePlanets);
-}
-
-animatePlanets();
-
-/* 🖱️ MOVIMIENTO 3D CON MOUSE */
-document.addEventListener("mousemove", (e) => {
-    let x = (window.innerWidth/2 - e.clientX) / 30;
-    let y = (window.innerHeight/2 - e.clientY) / 30;
-
-    universe.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-});
-
-/* 💖 CORAZONES */
-document.addEventListener("mousemove", (e) => {
-
-    if (Math.random() > 0.08) return;
-
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-
-    heart.style.left = e.clientX + "px";
-    heart.style.top = e.clientY + "px";
-
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 4000);
-});
-</script>
-
 </body>
 </html>
