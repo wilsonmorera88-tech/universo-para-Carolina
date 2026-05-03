@@ -2,128 +2,24 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Nuestro Universo 💖</title>
+<title>Saturno 💖</title>
 
 <style>
-html, body {
+body {
     margin: 0;
-    height: 100%;
     overflow: hidden;
-    background: radial-gradient(circle at center, #070012, #000);
-    font-family: 'Segoe UI', sans-serif;
+    background: black;
 }
 
-/* ESCENA */
-.scene {
-    width: 100%;
-    height: 100vh;
-    perspective: 1400px;
-}
-
-.universe {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.2s ease;
-}
-
-/* ⭐ ESTRELLAS */
-.star {
-    position: absolute;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 0 8px rgba(255,255,255,0.8);
-}
-
-/* 💌 TEXTO */
 .texto {
     position: absolute;
     top: 10%;
     width: 100%;
     text-align: center;
-    font-size: 1.4em;
     color: white;
+    font-size: 1.5em;
+    font-family: Arial;
     text-shadow: 0 0 20px pink;
-}
-
-/* 🪐 SATURNO */
-.saturn {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    transform: translate(-50%, -50%) translateZ(200px);
-
-    /* COLOR SUAVE REALISTA */
-    background: radial-gradient(circle at 30% 30%, #f5deb3, #d2a679, #8c6239);
-
-    /* SOMBRAS */
-    box-shadow:
-        inset -40px -40px 80px rgba(0,0,0,0.6),
-        inset 20px 20px 40px rgba(255,255,255,0.2),
-        0 0 60px rgba(255,200,150,0.5);
-
-    animation: rotar 40s linear infinite;
-}
-
-/* TEXTURA SUAVE */
-.saturn::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-
-    background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.08),
-        rgba(255,255,255,0.08) 6px,
-        rgba(0,0,0,0.05) 12px
-    );
-}
-
-/* 💍 ANILLOS */
-.ring {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    width: 420px;
-    height: 140px;
-    border-radius: 50%;
-    transform: translate(-50%, -50%) rotateX(75deg) translateZ(190px);
-
-    background: radial-gradient(
-        ellipse at center,
-        rgba(255,230,180,0.6) 20%,
-        rgba(200,170,120,0.4) 40%,
-        rgba(0,0,0,0) 70%
-    );
-
-    box-shadow:
-        0 0 40px rgba(255,220,150,0.4);
-}
-
-/* ROTACIÓN */
-@keyframes rotar {
-    from { transform: translate(-50%, -50%) translateZ(200px) rotate(0deg); }
-    to { transform: translate(-50%, -50%) translateZ(200px) rotate(360deg); }
-}
-
-/* 💖 CORAZONES */
-.heart {
-    position: absolute;
-    font-size: 18px;
-    animation: subir 4s ease forwards;
-}
-
-@keyframes subir {
-    to {
-        transform: translateY(-200px);
-        opacity: 0;
-    }
 }
 </style>
 
@@ -131,65 +27,128 @@ html, body {
 
 <body>
 
-<div class="scene">
-<div class="universe" id="universe">
-
-    <div class="texto">
-        💖 Si tuviera que elegir un planeta…<br>
-        elegiría quedarme contigo en todos los universos ✨
-    </div>
-
-    <div class="ring"></div>
-    <div class="saturn"></div>
-
+<div class="texto">
+💖 En todos los universos… siempre te elegiría a ti ✨
 </div>
-</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
-const universe = document.getElementById("universe");
 
-/* ⭐ ESTRELLAS 3D */
-for (let i = 0; i < 300; i++) {
-    let star = document.createElement("div");
-    star.className = "star";
+/* ESCENA */
+const scene = new THREE.Scene();
 
-    let size = Math.random() * 2;
-    star.style.width = size + "px";
-    star.style.height = size + "px";
+/* CAMARA */
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
 
-    star.style.left = Math.random() * 100 + "%";
-    star.style.top = Math.random() * 100 + "%";
+camera.position.z = 5;
 
-    let z = Math.random() * 1000 - 500;
-    star.style.transform = `translateZ(${z}px)`;
+/* RENDER */
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-    universe.appendChild(star);
+/* LUZ */
+const light = new THREE.PointLight(0xffffff, 1.5);
+light.position.set(5,5,5);
+scene.add(light);
+
+/* LUZ AMBIENTE */
+scene.add(new THREE.AmbientLight(0x404040));
+
+/* TEXTURA DE SATURNO (REAL) */
+const textureLoader = new THREE.TextureLoader();
+
+const saturnTexture = textureLoader.load(
+"https://threejsfundamentals.org/threejs/resources/images/planets/saturn.jpg"
+);
+
+const saturnRingTexture = textureLoader.load(
+"https://threejsfundamentals.org/threejs/resources/images/planets/saturnringcolor.jpg"
+);
+
+/* PLANETA */
+const geometry = new THREE.SphereGeometry(1, 64, 64);
+const material = new THREE.MeshStandardMaterial({
+    map: saturnTexture
+});
+
+const saturn = new THREE.Mesh(geometry, material);
+scene.add(saturn);
+
+/* ANILLOS */
+const ringGeometry = new THREE.RingGeometry(1.5, 2.5, 64);
+
+const ringMaterial = new THREE.MeshBasicMaterial({
+    map: saturnRingTexture,
+    side: THREE.DoubleSide,
+    transparent: true
+});
+
+const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+ring.rotation.x = Math.PI / 2.5;
+
+scene.add(ring);
+
+/* ESTRELLAS */
+const starsGeometry = new THREE.BufferGeometry();
+const starsCount = 2000;
+
+const positions = [];
+
+for (let i = 0; i < starsCount; i++) {
+    positions.push((Math.random() - 0.5) * 200);
+    positions.push((Math.random() - 0.5) * 200);
+    positions.push((Math.random() - 0.5) * 200);
 }
 
-/* 🖱️ MOVIMIENTO 3D */
-document.addEventListener("mousemove", (e) => {
-    let x = (window.innerWidth/2 - e.clientX) / 25;
-    let y = (window.innerHeight/2 - e.clientY) / 25;
+starsGeometry.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(positions, 3)
+);
 
-    universe.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+const starsMaterial = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 0.1
 });
 
-/* 💖 CORAZONES */
+const stars = new THREE.Points(starsGeometry, starsMaterial);
+scene.add(stars);
+
+/* ANIMACIÓN */
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    saturn.rotation.y += 0.002;
+    ring.rotation.z += 0.001;
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+/* INTERACCIÓN MOUSE */
 document.addEventListener("mousemove", (e) => {
+    let x = (e.clientX / window.innerWidth - 0.5) * 2;
+    let y = (e.clientY / window.innerHeight - 0.5) * 2;
 
-    if (Math.random() > 0.1) return;
-
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-
-    heart.style.left = e.clientX + "px";
-    heart.style.top = e.clientY + "px";
-
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 4000);
+    saturn.rotation.y += x * 0.01;
+    saturn.rotation.x += y * 0.01;
 });
+
+/* RESPONSIVE */
+window.addEventListener("resize", () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
+
 </script>
 
 </body>
