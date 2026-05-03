@@ -2,42 +2,65 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para ti 💖</title>
+<title>Nuestro Universo 💖</title>
 
 <style>
-body {
+html, body {
     margin: 0;
+    height: 100%;
     overflow: hidden;
+    background: radial-gradient(circle at center, #0a0015, #000);
     font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle, #1a001f, #000);
     color: white;
+}
+
+/* ESCENA 3D */
+.scene {
+    width: 100%;
+    height: 100vh;
+    perspective: 1200px;
+}
+
+.universe {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.2s ease;
+}
+
+/* ESTRELLAS */
+.star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
 }
 
 /* TEXTO */
 .texto {
     position: absolute;
-    top: 20%;
+    top: 15%;
     width: 100%;
     text-align: center;
     font-size: 1.5em;
     line-height: 1.6em;
     text-shadow: 0 0 20px pink;
-    padding: 0 20px;
+    z-index: 5;
 }
 
 /* IMAGEN CENTRAL */
-.main {
+.center {
     position: absolute;
     top: 55%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) translateZ(150px);
 }
 
-.main img {
+.center img {
     width: 260px;
     border-radius: 20px;
-    box-shadow: 0 0 40px rgba(255,100,200,0.8);
-    transition: transform 0.3s;
+    box-shadow: 0 0 60px rgba(255,100,200,0.8);
 }
 
 /* FOTOS FLOTANTES */
@@ -53,13 +76,16 @@ body {
 /* CORAZONES */
 .heart {
     position: absolute;
-    font-size: 20px;
+    font-size: 18px;
+    pointer-events: none;
     animation: subir 4s ease forwards;
 }
 
 @keyframes subir {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-200px); opacity: 0; }
+    to {
+        transform: translateY(-200px);
+        opacity: 0;
+    }
 }
 </style>
 
@@ -67,37 +93,62 @@ body {
 
 <body>
 
-<div class="texto">
-💖 No sé en qué momento te volviste mi lugar favorito,<br>
-pero ahora todo tiene más sentido contigo ✨<br><br>
-Si el universo existe…<br>
-seguro es para que tú y yo nos encontráramos 💕
-</div>
+<div class="scene">
+<div class="universe" id="universe">
 
-<div class="main" id="card">
-<img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7">
+    <!-- TEXTO ROMÁNTICO -->
+    <div class="texto">
+        💖 No sé en qué momento te volviste mi lugar favorito,<br>
+        pero ahora todo tiene más sentido contigo ✨<br><br>
+        Si el universo existe…<br>
+        seguro es para que tú y yo nos encontráramos 💕
+    </div>
+
+    <!-- IMAGEN CENTRAL -->
+    <div class="center" id="card">
+        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7">
+    </div>
+
+</div>
 </div>
 
 <script>
-
-/* EFECTO 3D */
+const universe = document.getElementById("universe");
 const card = document.getElementById("card");
 
-document.addEventListener("mousemove", (e) => {
-    let x = (window.innerWidth/2 - e.clientX) / 40;
-    let y = (window.innerHeight/2 - e.clientY) / 40;
+/* ⭐ ESTRELLAS EN PROFUNDIDAD */
+for (let i = 0; i < 250; i++) {
+    let star = document.createElement("div");
+    star.className = "star";
 
-    card.style.transform = `translate(-50%, -50%) rotateY(${x}deg) rotateX(${y}deg)`;
+    let size = Math.random() * 2;
+    star.style.width = size + "px";
+    star.style.height = size + "px";
+
+    star.style.left = Math.random() * 100 + "%";
+    star.style.top = Math.random() * 100 + "%";
+
+    let z = Math.random() * 800 - 400;
+    star.style.transform = `translateZ(${z}px)`;
+
+    universe.appendChild(star);
+}
+
+/* 🖱️ MOVIMIENTO 3D */
+document.addEventListener("mousemove", (e) => {
+    let x = (window.innerWidth/2 - e.clientX) / 30;
+    let y = (window.innerHeight/2 - e.clientY) / 30;
+
+    universe.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* IMÁGENES BONITAS */
+/* 📸 IMÁGENES BONITAS */
 const fotos = [
 "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
 "https://images.unsplash.com/photo-1511988617509-a57c8a288659",
 "https://images.unsplash.com/photo-1519741497674-611481863552"
 ];
 
-/* INTERACCIÓN */
 document.addEventListener("mousemove", (e) => {
 
     if (Math.random() > 0.07) return;
@@ -119,7 +170,7 @@ document.addEventListener("mousemove", (e) => {
     setTimeout(() => img.remove(), 2000);
 });
 
-/* CORAZONES */
+/* 💖 CORAZONES */
 document.addEventListener("click", (e) => {
 
     let heart = document.createElement("div");
