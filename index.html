@@ -9,7 +9,7 @@ html, body {
     margin: 0;
     height: 100%;
     overflow: hidden;
-    background: radial-gradient(circle at center, #0a0015, #000);
+    background: radial-gradient(circle at center, #050010, #000);
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -17,7 +17,7 @@ html, body {
 .scene {
     width: 100%;
     height: 100vh;
-    perspective: 1200px;
+    perspective: 1400px;
 }
 
 .universe {
@@ -28,28 +28,27 @@ html, body {
     transition: transform 0.2s ease;
 }
 
-/* ESTRELLAS */
+/* ⭐ ESTRELLAS */
 .star {
     position: absolute;
     border-radius: 50%;
     background: white;
-    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    box-shadow: 0 0 8px rgba(255,255,255,0.8);
 }
 
 /* TEXTO */
 .texto {
     position: absolute;
-    top: 12%;
+    top: 10%;
     width: 100%;
     text-align: center;
     font-size: 1.4em;
     color: white;
-    text-shadow: 0 0 25px pink;
-    z-index: 5;
+    text-shadow: 0 0 20px pink;
 }
 
-/* 🌍 PLANETA DEL AMOR */
-.planet {
+/* 🌍 JÚPITER */
+.jupiter {
     position: absolute;
     top: 55%;
     left: 50%;
@@ -57,17 +56,51 @@ html, body {
     height: 260px;
     border-radius: 50%;
     transform: translate(-50%, -50%) translateZ(200px);
-    
-    /* textura + color */
-    background: radial-gradient(circle at 30% 30%, #ff9ad5, #ff4da6, #800040);
-    
-    /* iluminación */
-    box-shadow:
-        inset -20px -20px 50px rgba(0,0,0,0.6),
-        inset 10px 10px 30px rgba(255,255,255,0.2),
-        0 0 60px rgba(255,100,200,0.8);
 
-    animation: girar 20s linear infinite;
+    /* TEXTURA REALISTA */
+    background: radial-gradient(circle at 30% 30%, #f5c27a, #c97b3b, #7a3f1c);
+
+    box-shadow:
+        inset -40px -40px 80px rgba(0,0,0,0.7),
+        inset 20px 20px 40px rgba(255,255,255,0.2),
+        0 0 80px rgba(255,180,120,0.6);
+
+    animation: girar 30s linear infinite;
+}
+
+/* BANDAS DE JÚPITER */
+.jupiter::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,200,150,0.2),
+        rgba(255,200,150,0.2) 10px,
+        rgba(150,80,40,0.2) 20px
+    );
+}
+
+/* ANILLOS */
+.ring {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    width: 400px;
+    height: 120px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotateX(75deg) translateZ(190px);
+
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255,220,180,0.4) 20%,
+        rgba(200,150,100,0.3) 40%,
+        rgba(0,0,0,0) 70%
+    );
+
+    box-shadow: 0 0 40px rgba(255,200,150,0.4);
 }
 
 /* ROTACIÓN */
@@ -76,11 +109,10 @@ html, body {
     to { transform: translate(-50%, -50%) translateZ(200px) rotate(360deg); }
 }
 
-/* CORAZONES */
+/* 💖 CORAZONES */
 .heart {
     position: absolute;
     font-size: 18px;
-    pointer-events: none;
     animation: subir 4s ease forwards;
 }
 
@@ -99,14 +131,13 @@ html, body {
 <div class="scene">
 <div class="universe" id="universe">
 
-    <!-- TEXTO -->
     <div class="texto">
-        💖 Eres mi lugar favorito en todo el universo ✨<br>
-        y si volviera a vivir… te elegiría siempre 💕
+        💖 En este universo infinito…<br>
+        tú eres mi planeta favorito ✨
     </div>
 
-    <!-- PLANETA -->
-    <div class="planet"></div>
+    <div class="ring"></div>
+    <div class="jupiter"></div>
 
 </div>
 </div>
@@ -115,7 +146,7 @@ html, body {
 const universe = document.getElementById("universe");
 
 /* ⭐ ESTRELLAS 3D */
-for (let i = 0; i < 250; i++) {
+for (let i = 0; i < 300; i++) {
     let star = document.createElement("div");
     star.className = "star";
 
@@ -126,7 +157,7 @@ for (let i = 0; i < 250; i++) {
     star.style.left = Math.random() * 100 + "%";
     star.style.top = Math.random() * 100 + "%";
 
-    let z = Math.random() * 800 - 400;
+    let z = Math.random() * 1000 - 500;
     star.style.transform = `translateZ(${z}px)`;
 
     universe.appendChild(star);
@@ -134,8 +165,8 @@ for (let i = 0; i < 250; i++) {
 
 /* 🖱️ MOVIMIENTO 3D */
 document.addEventListener("mousemove", (e) => {
-    let x = (window.innerWidth/2 - e.clientX) / 30;
-    let y = (window.innerHeight/2 - e.clientY) / 30;
+    let x = (window.innerWidth/2 - e.clientX) / 25;
+    let y = (window.innerHeight/2 - e.clientY) / 25;
 
     universe.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
@@ -143,7 +174,7 @@ document.addEventListener("mousemove", (e) => {
 /* 💖 CORAZONES */
 document.addEventListener("mousemove", (e) => {
 
-    if (Math.random() > 0.08) return;
+    if (Math.random() > 0.1) return;
 
     let heart = document.createElement("div");
     heart.className = "heart";
