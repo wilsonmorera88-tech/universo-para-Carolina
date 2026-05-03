@@ -33,65 +33,53 @@ html, body {
     position: absolute;
     border-radius: 50%;
     background: white;
-    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    box-shadow: 0 0 10px white;
 }
 
 /* TEXTO */
 .texto {
     position: absolute;
-    top: 12%;
+    top: 10%;
     width: 100%;
     text-align: center;
     color: white;
-    font-size: 1.6em;
-    text-shadow: 0 0 25px pink;
+    font-size: 1.4em;
+    text-shadow: 0 0 20px pink;
     z-index: 10;
     padding: 0 20px;
 }
 
-/* 🌙 LUNA REAL */
+/* LUNA REAL */
 .moon {
     position: absolute;
     top: 55%;
     left: 50%;
-    width: 240px;
-    height: 240px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
     transform: translate(-50%, -50%) translateZ(200px);
 
-    /* IMAGEN REAL */
     background: url('https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg');
     background-size: cover;
-    background-position: center;
 
-    /* SOMBRA REALISTA */
     box-shadow:
-        inset -60px -40px 80px rgba(0,0,0,0.7),
-        inset 20px 20px 40px rgba(255,255,255,0.2),
-        0 0 50px rgba(255,255,255,0.3);
-
-    animation: rotar 60s linear infinite;
+        inset -50px -40px 70px rgba(0,0,0,0.7),
+        inset 20px 20px 30px rgba(255,255,255,0.2),
+        0 0 40px rgba(255,255,255,0.3);
 }
 
-/* ROTACIÓN SUAVE */
-@keyframes rotar {
-    from { transform: translate(-50%, -50%) translateZ(200px) rotate(0deg); }
-    to { transform: translate(-50%, -50%) translateZ(200px) rotate(360deg); }
-}
-
-/* CORAZONES */
-.heart {
+/* BOTÓN PERMISO */
+.btn {
     position: absolute;
-    font-size: 18px;
-    pointer-events: none;
-    animation: subir 3s ease forwards;
-}
-
-@keyframes subir {
-    to {
-        transform: translateY(-200px);
-        opacity: 0;
-    }
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: pink;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    z-index: 20;
 }
 </style>
 
@@ -103,10 +91,8 @@ html, body {
 <div class="universe" id="universe">
 
 <div class="texto">
-💖 Carolina…<br><br>
-Eres lo más bonito que me ha pasado ✨<br>
-y cada vez que veo la luna…<br>
-pienso en ti 🌙💕
+💖 Carolina…<br>
+Eres mi universo entero ✨🌙
 </div>
 
 <div class="moon"></div>
@@ -114,10 +100,12 @@ pienso en ti 🌙💕
 </div>
 </div>
 
+<div class="btn" onclick="activarMovimiento()">Activar movimiento 💖</div>
+
 <script>
 const universe = document.getElementById("universe");
 
-/* ⭐ ESTRELLAS */
+/* ESTRELLAS */
 for (let i = 0; i < 400; i++) {
     let star = document.createElement("div");
     star.className = "star";
@@ -135,7 +123,7 @@ for (let i = 0; i < 400; i++) {
     universe.appendChild(star);
 }
 
-/* 🖱️ MOVIMIENTO 3D */
+/* MOUSE (PC) */
 document.addEventListener("mousemove", (e) => {
     let x = (window.innerWidth/2 - e.clientX) / 30;
     let y = (window.innerHeight/2 - e.clientY) / 30;
@@ -143,20 +131,30 @@ document.addEventListener("mousemove", (e) => {
     universe.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* 💖 CORAZONES */
-document.addEventListener("click", (e) => {
+/* 📱 MOVIMIENTO CELULAR */
+function activarMovimiento() {
 
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+        .then(permissionState => {
+            if (permissionState === 'granted') {
+                window.addEventListener('deviceorientation', mover);
+            }
+        });
+    } else {
+        window.addEventListener('deviceorientation', mover);
+    }
+}
 
-    heart.style.left = e.clientX + "px";
-    heart.style.top = e.clientY + "px";
+function mover(event) {
+    let x = event.gamma; // izquierda-derecha
+    let y = event.beta;  // adelante-atrás
 
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 3000);
-});
+    universe.style.transform = `
+        rotateY(${x}deg)
+        rotateX(${y - 45}deg)
+    `;
+}
 </script>
 
 </body>
