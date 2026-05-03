@@ -11,10 +11,9 @@ html, body {
     overflow: hidden;
     background: radial-gradient(circle at center, #0a0015, #000);
     font-family: 'Segoe UI', sans-serif;
-    color: white;
 }
 
-/* ESCENA 3D */
+/* ESCENA */
 .scene {
     width: 100%;
     height: 100vh;
@@ -40,37 +39,41 @@ html, body {
 /* TEXTO */
 .texto {
     position: absolute;
-    top: 15%;
+    top: 12%;
     width: 100%;
     text-align: center;
-    font-size: 1.5em;
-    line-height: 1.6em;
-    text-shadow: 0 0 20px pink;
+    font-size: 1.4em;
+    color: white;
+    text-shadow: 0 0 25px pink;
     z-index: 5;
 }
 
-/* IMAGEN CENTRAL */
-.center {
+/* 🌍 PLANETA DEL AMOR */
+.planet {
     position: absolute;
     top: 55%;
     left: 50%;
-    transform: translate(-50%, -50%) translateZ(150px);
-}
-
-.center img {
     width: 260px;
-    border-radius: 20px;
-    box-shadow: 0 0 60px rgba(255,100,200,0.8);
+    height: 260px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) translateZ(200px);
+    
+    /* textura + color */
+    background: radial-gradient(circle at 30% 30%, #ff9ad5, #ff4da6, #800040);
+    
+    /* iluminación */
+    box-shadow:
+        inset -20px -20px 50px rgba(0,0,0,0.6),
+        inset 10px 10px 30px rgba(255,255,255,0.2),
+        0 0 60px rgba(255,100,200,0.8);
+
+    animation: girar 20s linear infinite;
 }
 
-/* FOTOS FLOTANTES */
-.memory {
-    position: absolute;
-    width: 100px;
-    border-radius: 15px;
-    opacity: 0;
-    transition: all 2s ease;
-    box-shadow: 0 0 30px pink;
+/* ROTACIÓN */
+@keyframes girar {
+    from { transform: translate(-50%, -50%) translateZ(200px) rotate(0deg); }
+    to { transform: translate(-50%, -50%) translateZ(200px) rotate(360deg); }
 }
 
 /* CORAZONES */
@@ -96,27 +99,22 @@ html, body {
 <div class="scene">
 <div class="universe" id="universe">
 
-    <!-- TEXTO ROMÁNTICO -->
+    <!-- TEXTO -->
     <div class="texto">
-        💖 No sé en qué momento te volviste mi lugar favorito,<br>
-        pero ahora todo tiene más sentido contigo ✨<br><br>
-        Si el universo existe…<br>
-        seguro es para que tú y yo nos encontráramos 💕
+        💖 Eres mi lugar favorito en todo el universo ✨<br>
+        y si volviera a vivir… te elegiría siempre 💕
     </div>
 
-    <!-- IMAGEN CENTRAL -->
-    <div class="center" id="card">
-        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7">
-    </div>
+    <!-- PLANETA -->
+    <div class="planet"></div>
 
 </div>
 </div>
 
 <script>
 const universe = document.getElementById("universe");
-const card = document.getElementById("card");
 
-/* ⭐ ESTRELLAS EN PROFUNDIDAD */
+/* ⭐ ESTRELLAS 3D */
 for (let i = 0; i < 250; i++) {
     let star = document.createElement("div");
     star.className = "star";
@@ -142,36 +140,10 @@ document.addEventListener("mousemove", (e) => {
     universe.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* 📸 IMÁGENES BONITAS */
-const fotos = [
-"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-"https://images.unsplash.com/photo-1511988617509-a57c8a288659",
-"https://images.unsplash.com/photo-1519741497674-611481863552"
-];
-
+/* 💖 CORAZONES */
 document.addEventListener("mousemove", (e) => {
 
-    if (Math.random() > 0.07) return;
-
-    let img = document.createElement("img");
-    img.src = fotos[Math.floor(Math.random()*fotos.length)];
-    img.className = "memory";
-
-    img.style.left = e.clientX + "px";
-    img.style.top = e.clientY + "px";
-
-    document.body.appendChild(img);
-
-    setTimeout(() => {
-        img.style.opacity = 1;
-        img.style.transform = "translateY(-150px)";
-    }, 50);
-
-    setTimeout(() => img.remove(), 2000);
-});
-
-/* 💖 CORAZONES */
-document.addEventListener("click", (e) => {
+    if (Math.random() > 0.08) return;
 
     let heart = document.createElement("div");
     heart.className = "heart";
