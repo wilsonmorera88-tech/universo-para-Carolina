@@ -36,27 +36,27 @@ html, body {
     box-shadow: 0 0 8px white;
 }
 
-/* TEXTO (ENCIMA) */
+/* TEXTO */
 .texto {
     position: absolute;
-    top: 10%;
+    top: 8%;
     width: 100%;
     text-align: center;
     color: white;
 
-    font-size: 2.2em;
-    line-height: 1.4;
+    font-size: 2em;
+    line-height: 1.5;
 
     text-shadow:
         0 0 10px pink,
         0 0 20px pink,
         0 0 40px rgba(255,105,180,0.6);
 
-    z-index: 10; /* 👈 ENCIMA */
+    z-index: 10;
     padding: 0 20px;
 }
 
-/* 🌙 LUNA REAL (DETRÁS) */
+/* 🌙 LUNA */
 .moon {
     position: absolute;
     top: 55%;
@@ -65,33 +65,39 @@ html, body {
     height: 240px;
     border-radius: 50%;
     transform: translate(-50%, -50%) translateZ(150px);
+    cursor: pointer;
 
     background: url('https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg');
     background-size: cover;
-    background-position: center;
 
-    /* SOMBRA SUAVE REALISTA (SIN BORDE NEGRO) */
     box-shadow:
         inset -20px -15px 40px rgba(0,0,0,0.4),
         inset 15px 15px 30px rgba(255,255,255,0.1);
-
-    filter: contrast(1.1) brightness(1.05);
-
-    z-index: 1; /* 👈 DETRÁS */
 }
 
-/* BOTÓN */
-.btn {
+/* 📸 FOTO OCULTA */
+.foto {
     position: absolute;
-    bottom: 30px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    background: pink;
-    color: black;
-    padding: 10px 20px;
+    width: 260px;
+    height: 260px;
+    transform: translate(-50%, -50%) scale(0);
     border-radius: 20px;
-    cursor: pointer;
-    z-index: 20;
+    object-fit: cover;
+
+    box-shadow: 0 0 30px pink;
+
+    opacity: 0;
+    transition: all 0.8s ease;
+
+    z-index: 15;
+}
+
+/* FOTO ACTIVA */
+.foto.visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
 }
 </style>
 
@@ -104,17 +110,18 @@ html, body {
 
 <div class="texto">
 💖 Carolina…<br><br>
-Eres lo más bonito que me ha pasado ✨<br>
-y si el universo es infinito…<br>
-mi amor por ti también lo es 🌙💕
+Espero que cuando despiertes y veas esto,<br>
+sepas que pensé en ti 💕<br><br>
+
+Toca la luna 🌙✨
 </div>
 
-<div class="moon"></div>
+<div class="moon" onclick="mostrarFoto()"></div>
+
+<img src="foto1.jpeg" class="foto" id="foto">
 
 </div>
 </div>
-
-<div class="btn" onclick="activarMovimiento()">Activar movimiento 💖</div>
 
 <script>
 const universe = document.getElementById("universe");
@@ -137,7 +144,7 @@ for (let i = 0; i < 400; i++) {
     universe.appendChild(star);
 }
 
-/* MOUSE */
+/* MOVIMIENTO MOUSE */
 document.addEventListener("mousemove", (e) => {
     let x = (window.innerWidth/2 - e.clientX) / 30;
     let y = (window.innerHeight/2 - e.clientY) / 30;
@@ -145,29 +152,10 @@ document.addEventListener("mousemove", (e) => {
     universe.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
 
-/* CELULAR */
-function activarMovimiento() {
-
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-        .then(permissionState => {
-            if (permissionState === 'granted') {
-                window.addEventListener('deviceorientation', mover);
-            }
-        });
-    } else {
-        window.addEventListener('deviceorientation', mover);
-    }
-}
-
-function mover(event) {
-    let x = event.gamma;
-    let y = event.beta;
-
-    universe.style.transform = `
-        rotateY(${x}deg)
-        rotateX(${y - 45}deg)
-    `;
+/* MOSTRAR FOTO */
+function mostrarFoto() {
+    const foto = document.getElementById("foto");
+    foto.classList.add("visible");
 }
 </script>
 
